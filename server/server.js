@@ -18,6 +18,7 @@ app.use(bodyParser.json())
 
 app.use(require('./routes/usuario'));
 app.use(require('./routes/categoria'));
+app.use(require('./routes/producto'));
 
 
 mongoose.connect(process.env.URL_DB, { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true }, (err, res) => {

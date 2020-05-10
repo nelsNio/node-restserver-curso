@@ -14,7 +14,8 @@ app.get('/categoria', (req, res) => {
     let hasta = req.query.limite || 5;
     hasta = Number(hasta);
 
-    Categoria.find({}, 'descripcion usuario')
+    Categoria.find({})
+        .populate('usuario', 'nombre')
         .skip(desde)
         .limit(hasta)
         .exec((err, Categorias) => {
@@ -45,7 +46,8 @@ app.get('/categoria/:id', (req, res) => {
     let id = req.params.id;
 
 
-    Categoria.find({ _id: id }, 'descripcion usuario')
+    Categoria.find({ _id: id })
+        .populate('usuario', 'nombre email')
         .exec((err, Categorias) => {
             if (err) {
                 return res.status(400).json({
@@ -93,6 +95,56 @@ app.post('/categoria', (req, res) => {
             });
         }
     });
+})
+
+
+/**
+ * PUT METHOD
+ * REQUIRE ID DATA
+ */
+app.put('/categoria/:id', (req, res) => {
+    let id = req.params.id;
+    let body = _.pick(req.body, ['descripcion']);
+    Categoria.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, categoriaDB) => {
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                mensaje: err
+            });
+        }
+        res.json({
+            ok: true,
+            categoria: categoriaDB
+        })
+    });
+
+})
+
+/**
+ * DELETE METHOD
+ */
+app.delete('/categoria/:id', function(req, res) {
+    let id = req.params.id;
+    Categoria.findByIdAndRemove(id, (err, deleted) => {
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                mensaje: err
+            });
+        }
+        if (deleted === null) {
+            return res.status(404).json({
+                ok: false,
+                mensaje: 'Categoria no encontrada'
+            });
+        }
+        res.json({
+            ok: true,
+            categoria: deleted
+        })
+
+    });
+
 })
 
 app.patch('/categoria', (req, res) => {

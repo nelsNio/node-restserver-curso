@@ -2,12 +2,13 @@ const express = require('express');
 const Usuario = require('../models/usuario');
 const bcrypt = require('bcrypt');
 const _ = require('underscore');
+const { verificaToken, verificaAdminRole } = require('../middlewares/autenticacion')
 
 const app = express();
 
 
 
-app.get('/usuario', (req, res) => {
+app.get('/usuario', [verificaToken, verificaAdminRole], (req, res) => {
     let desde = req.query.desde || 0;
     desde = Number(desde);
 
@@ -41,7 +42,7 @@ app.get('/usuario', (req, res) => {
 /**
  * POST METHOD
  */
-app.post('/usuario', (req, res) => {
+app.post('/usuario', [verificaToken, verificaAdminRole], (req, res) => {
 
 
     let body = req.body;
@@ -73,7 +74,7 @@ app.post('/usuario', (req, res) => {
  * PUT METHOD
  * REQUIRE ID DATA
  */
-app.put('/usuario/:id', (req, res) => {
+app.put('/usuario/:id', [verificaToken, verificaAdminRole], (req, res) => {
     let id = req.params.id;
     let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
     Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {
@@ -94,7 +95,7 @@ app.put('/usuario/:id', (req, res) => {
 /**
  * DELETE METHOD
  */
-app.delete('/usuario/:id', function(req, res) {
+app.delete('/usuario/:id', [verificaToken, verificaAdminRole], function(req, res) {
     let id = req.params.id;
     // Usuario.findByIdAndRemove(id, (err, deleted) => {
     Usuario.findByIdAndUpdate(id, { estado: false }, (err, deleted) => {
@@ -122,7 +123,7 @@ app.delete('/usuario/:id', function(req, res) {
 /**
  * PATCH METHOD
  */
-app.patch('/usuario', (req, res) => {
+app.patch('/usuario', [verificaToken, verificaAdminRole], (req, res) => {
     res.json('patch Usuario')
 })
 

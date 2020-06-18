@@ -4,12 +4,13 @@ const express = require('express');
 
 let app = express();
 let Producto = require('../models/producto');
+const { verificaToken, verificaAdminRole } = require('../middlewares/autenticacion')
 
 
 /**
  *  Obtener productos
  */
-app.get('/productos', (req, res) => {
+app.get('/productos', verificaToken, (req, res) => {
     // trae todos los productos
     // populate: usuario categoria
     // paginado
@@ -82,7 +83,7 @@ app.get('/productos/:id', (req, res) => {
 /**
  *  Buscar productos
  */
-app.get('/productos/buscar/:termino', (req, res) => {
+app.get('/productos/buscar/:termino', verificaToken, (req, res) => {
 
     let termino = req.params.termino;
 
@@ -120,7 +121,7 @@ app.get('/productos/buscar/:termino', (req, res) => {
 /**
  *  Crear un nuevo producto
  */
-app.post('/productos', (req, res) => {
+app.post('/productos', verificaToken, (req, res) => {
     // grabar el usuario
     // grabar una categoria del listado 
 
@@ -156,7 +157,7 @@ app.post('/productos', (req, res) => {
 /**
  *  Actualizar un producto
  */
-app.put('/productos/:id', (req, res) => {
+app.put('/productos/:id', (verificaToken, req, res) => {
     // grabar el usuario
     // grabar una categoria del listado 
 
@@ -211,7 +212,7 @@ app.put('/productos/:id', (req, res) => {
 /**
  *  Borrar un producto
  */
-app.delete('/productos/:id', (req, res) => {
+app.delete('/productos/:id', verificaToken, (req, res) => {
 
     let id = req.params.id;
 

@@ -1,13 +1,16 @@
 const express = require('express');
 const Categoria = require('../models/categoria');
 const _ = require('underscore');
+const { verificaToken } = require('../middlewares/autenticacion')
+
 
 const app = express();
 
 /**
  * GET ALL
  */
-app.get('/categoria', (req, res) => {
+app.get('/categorias', verificaToken, (req, res) => {
+
     let desde = req.query.desde || 0;
     desde = Number(desde);
 
@@ -42,7 +45,7 @@ app.get('/categoria', (req, res) => {
 /**
  * GET BY ID
  */
-app.get('/categoria/:id', (req, res) => {
+app.get('/categoria/:id', verificaToken, (req, res) => {
     let id = req.params.id;
 
 
@@ -72,7 +75,7 @@ app.get('/categoria/:id', (req, res) => {
 /**
  * POST METHOD
  */
-app.post('/categoria', (req, res) => {
+app.post('/categorias', verificaToken, (req, res) => {
 
     let body = req.body;
 
@@ -102,7 +105,7 @@ app.post('/categoria', (req, res) => {
  * PUT METHOD
  * REQUIRE ID DATA
  */
-app.put('/categoria/:id', (req, res) => {
+app.put('/categoria/:id', verificaToken, (req, res) => {
     let id = req.params.id;
     let body = _.pick(req.body, ['descripcion']);
     Categoria.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, categoriaDB) => {
@@ -123,7 +126,7 @@ app.put('/categoria/:id', (req, res) => {
 /**
  * DELETE METHOD
  */
-app.delete('/categoria/:id', function(req, res) {
+app.delete('/categoria/:id', verificaToken, function(req, res) {
     let id = req.params.id;
     Categoria.findByIdAndRemove(id, (err, deleted) => {
         if (err) {
@@ -147,7 +150,7 @@ app.delete('/categoria/:id', function(req, res) {
 
 })
 
-app.patch('/categoria', (req, res) => {
+app.patch('/categorias', verificaToken, (req, res) => {
     res.json('patch Categoria')
 })
 

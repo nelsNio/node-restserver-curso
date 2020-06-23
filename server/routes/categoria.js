@@ -105,7 +105,7 @@ app.post('/categorias', verificaToken, (req, res) => {
  * PUT METHOD
  * REQUIRE ID DATA
  */
-app.put('/categoria/:id', verificaToken, (req, res) => {
+app.put('/categorias/:id', verificaToken, (req, res) => {
     let id = req.params.id;
     let body = _.pick(req.body, ['descripcion']);
     Categoria.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, categoriaDB) => {
@@ -126,7 +126,7 @@ app.put('/categoria/:id', verificaToken, (req, res) => {
 /**
  * DELETE METHOD
  */
-app.delete('/categoria/:id', verificaToken, function(req, res) {
+app.delete('/categorias/:id', verificaToken, function(req, res) {
     let id = req.params.id;
     Categoria.findByIdAndRemove(id, (err, deleted) => {
         if (err) {
